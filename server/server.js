@@ -18,6 +18,12 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
+  
+    socket.on("playWord",({roomId,nickname,word}) => {
+    console.log(`${nickname} played ${word}`);
+    io.to(roomId).emit("message", `${nickname} played: ${word}`);
+  });
 });
+
 
 server.listen(3000, () => console.log("Server running on http://localhost:3000"));

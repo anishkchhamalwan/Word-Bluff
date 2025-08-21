@@ -8,6 +8,7 @@ export default function Game() {
   const [nickname, setNickname] = useState("");
   const [roomId, setRoomId] = useState("");
   const [joined, setJoined] = useState(false);
+  const [word, setWord] = useState("");
 
   useEffect(() => {
     socket.on("message", (msg) => {
@@ -25,9 +26,15 @@ export default function Game() {
     setJoined(true);
   };
 
+  const playWord = () =>{
+    if(!word.trim) return ;
+    socket.emit("playWord", {roomId,nickname,word});
+    setWord("");
+  }
+
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Word Chain Game</h1>
+      <h1>Word Bluff </h1>
 
       {!joined ? (
         <div style={{ marginBottom: "20px" }}>
@@ -50,9 +57,24 @@ export default function Game() {
           </button>
         </div>
       ) : (
-        <h3>
-          Joined <strong>{roomId}</strong> as <strong>{nickname}</strong>
-        </h3>
+        <>
+          <h3>
+            Joined <strong>{roomId}</strong> as <strong>{nickname}</strong>
+          </h3>
+
+          <div style={{ marginBottom: "20px" }}>
+            <input
+              type="text"
+              placeholder="Enter a word"
+              value={word}
+              onChange={(e) => setWord(e.target.value)}
+              style={{ marginRight: "10px", padding: "5px" }}
+            />
+            <button onClick={playWord} style={{ padding: "5px 10px" }}>
+              Play Word
+            </button>
+          </div>
+        </>
       )}
 
       <ul>
